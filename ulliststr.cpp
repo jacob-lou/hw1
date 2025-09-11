@@ -26,6 +26,103 @@ size_t ULListStr::size() const
 
 // WRITE YOUR CODE HERE
 
+void ULListStr::push_back(const std::string& val){
+  if(empty()){
+    head_=tail_=new Item();
+    head_->first=0;
+    head_->last=0;
+  }
+  if(tail_->last==ARRSIZE){
+    Item* newItem = new Item();
+    newItem->first = 0;
+    newItem->last=0;
+    tail_->next = newItem;
+    newItem->prev = tail_;
+    tail_= newItem;
+  }
+  tail_->val[tail_->last]=val;
+  tail_->last++;
+  size_++;
+}
+
+void ULListStr::pop_back(){
+  if(empty()) return;
+
+  tail_->last--;
+  size_--;
+
+  if(tail_->first == tail_->last){
+    Item* temp = tail_;
+    tail_ = tail_->prev;
+    if(tail_!= NULL){
+      tail_->next = NULL;
+    }else{
+      head_=NULL;
+    }
+    delete temp;
+  }
+}
+
+void ULListStr::push_front(const std::string& val){
+  if(empty()){
+    head_=tail_=new Item();
+    head_->first=ARRSIZE;
+    head_->last=ARRSIZE;
+  }
+  if(head_->first==0){
+    Item* newItem = new Item();
+    newItem->first = ARRSIZE;
+    newItem->last=ARRSIZE;
+    head_->prev = newItem;
+    newItem->next = head_;
+    head_= newItem;
+  }
+  head_->first--;
+  head_->val[head_->first]=val;
+  size_++;
+}
+
+void ULListStr::pop_front(){
+  if(empty()) return;
+
+  head_->first++;
+  size_--;
+
+  if(head_->first == head_->last){
+    Item* temp = head_;
+    head_ = head_->next;
+    if(head_!= NULL){
+      head_->prev = NULL;
+    }else{
+      tail_=NULL;
+    }
+    delete temp;
+  }
+}
+
+std::string const & ULListStr::back() const{
+  return tail_->val[tail_->last-1];
+}
+
+std::string const & ULListStr::front() const{
+  return head_->val[head_->first];
+}
+
+std::string* ULListStr::getValAtLoc(size_t loc) const{
+  Item* curr= head_;
+  size_t idx=0;
+  while(curr!=NULL){
+    size_t bs=curr->last-curr->first;
+    if(loc<idx+bs){
+      return &curr->val[curr->first+(loc-idx)]; 
+    }
+    idx+=bs;
+    curr=curr->next;
+  }
+  return NULL;
+}
+
+
 void ULListStr::set(size_t loc, const std::string& val)
 {
   std::string* ptr = getValAtLoc(loc);
